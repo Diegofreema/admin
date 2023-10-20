@@ -227,7 +227,7 @@ export async function fetchEvent() {
     throw new Error('Failed to get EventModels');
   }
 }
-export async function deleteEventModel(id: string) {
+export async function deleteEvent(id: string) {
   try {
     connectToDB();
 
