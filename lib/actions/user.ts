@@ -294,7 +294,7 @@ export async function login(name: string, password: string) {
     }
 
     return {
-      name: admin.name,
+      name: admin?.name,
     };
   } catch (error) {
     console.log(error);

@@ -7,6 +7,7 @@ import Image from 'next/image';
 import { UploadDropzone } from '@/utils/uploadthing';
 import { IconCircleLetterX } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
+import { cn } from '@/lib/utils';
 interface Props {
   endpoint:
     | 'teamImage'
@@ -15,16 +16,19 @@ interface Props {
     | 'galleryImg'
     | 'galleryVideo'
     | 'sliderImg'
-    | 'projectVideo';
+    | 'projectVideo'
+    | 'blogImage';
   onChange: (url: string | undefined) => void;
   value: string;
   video?: boolean;
+  blog?: boolean;
 }
 export default function UploadComponent({
   endpoint,
   onChange,
   value,
   video = false,
+  blog = false,
 }: Props) {
   const fileType = value?.split('.').pop();
   const [isMounted, setIsMounted] = useState(false);
@@ -35,12 +39,20 @@ export default function UploadComponent({
     return (
       <div className="w-full min-h-[180px] flex items-center justify-center">
         {!video ? (
-          <div className="relative h-20 w-20">
+          <div
+            className={cn(
+              'relative mb-5',
+              blog ? 'h-[200px] w-[300px]' : 'h-20 w-20'
+            )}
+          >
             <Image
               fill
               src={value}
               alt="Upload"
-              className="rounded-full object-cover"
+              className={cn(
+                'object-cover',
+                blog ? 'rounded-md' : 'rounded-full'
+              )}
             />
             <button
               onClick={() => onChange('')}

@@ -17,6 +17,8 @@ import {
   IconTargetArrow,
   IconLogin,
   IconLogout,
+  IconArticle,
+  IconBallpen,
 } from '@tabler/icons-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
@@ -70,6 +72,8 @@ const mockdata = [
   { icon: IconUsersGroup, label: 'Volunteers', href: '/volunteer' },
   { icon: IconTargetArrow, label: 'Objectives', href: '/objective' },
   { icon: IconAdjustmentsHorizontal, label: 'Slider', href: '/slider' },
+  { icon: IconBallpen, label: 'Create Post', href: '/blog' },
+  { icon: IconArticle, label: 'Blog Posts', href: '/post' },
 ];
 
 export function SideBar() {

@@ -23,3 +23,12 @@ export type EventType = {
   venue: string;
   date: string;
 }[];
+
+export interface Post {
+  title: string;
+  content: string;
+  author: string;
+  slug: string;
+  tags: string;
+  meta: string;
+}

@@ -24,6 +24,9 @@ export const ourFileRouter = {
   sliderImg: f({
     image: { maxFileSize: '128MB', maxFileCount: 1 },
   }).onUploadComplete(() => {}),
+  blogImage: f({
+    image: { maxFileSize: '128MB', maxFileCount: 1 },
+  }).onUploadComplete(() => {}),
 } satisfies FileRouter;
 
 export type OurFileRouter = typeof ourFileRouter;
