@@ -1,6 +1,5 @@
 'use server';
 
-import cloudinary from '../cloudinary';
 import Goal from '../model/goals';
 import Obj from '../model/object';
 import Priority from '../model/priorities';
@@ -118,38 +117,3 @@ export async function deleteObj(id: string) {
     throw new Error('Failed to delete objective');
   }
 }
-
-export const cloudinaryUpload = async (fileToUpload: string) => {
-  try {
-    const data = await cloudinary.uploader.upload(fileToUpload, {
-      resource_type: 'image',
-      folder: 'blog',
-    });
-    return {
-      image: data?.secure_url,
-    };
-  } catch (e) {
-    console.log('error', e);
-  }
-};
-export type Images = {
-  images: {
-    src: string;
-  }[];
-};
-
-export const readAllImages = async () => {
-  try {
-    const { resources } = await cloudinary.api.resources({
-      type: 'upload',
-      prefix: 'blog',
-      resource_type: 'image',
-    });
-    const images = resources.map((image: any) => {
-      return { src: image?.secure_url };
-    });
-    return images;
-  } catch (e) {
-    console.log('error', e);
-  }
-};
