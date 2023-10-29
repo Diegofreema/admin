@@ -8,16 +8,15 @@ import BlogContent from '../model/post';
 
 export async function createPost(post: PostType) {
   const result = validateSchema(postSchema, post);
-  console.log(result);
 
-  if (result === null) throw new Error('Please fill all field');
+  if (result === null) return { message: 'Fill required fields' };
 
   const { title, content, author, meta, tags, slug, thumbnail } = post;
   try {
     connectToDB();
 
     const slugExists = await BlogPost.findOne({ slug });
-    if (slugExists) throw new Error('Slug already exists');
+    if (slugExists) return { message: 'Slug already exists' };
     const createdPost = await BlogContent.create({
       title,
       content,
@@ -27,11 +26,10 @@ export async function createPost(post: PostType) {
       slug,
       thumbnail,
     });
-    return createdPost;
   } catch (error: any) {
     console.log(error);
 
-    throw new Error(error?.message);
+    return { message: error.message };
   }
 }
 export async function fetchSinglePost(id: string) {

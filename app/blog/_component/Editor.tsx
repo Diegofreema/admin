@@ -65,59 +65,42 @@ const Editor = ({ btnTitle = 'Submit', busy = false, initialValue }: Post) => {
   };
   const handleSubmit = async () => {
     if (!editor) return;
-    if (post.title === '') {
+
+    const requiredFields = ['title', 'slug', 'meta'];
+    const emptyFields = requiredFields.filter(
+      (field) => !post[field as keyof Props]
+    );
+
+    if (emptyFields.length) {
       toast({
         variant: 'destructive',
-        title: 'Title is required',
+        title: `${emptyFields.join(' and ')} ${
+          emptyFields.length > 1 ? 'are' : 'is'
+        } required`,
         description: 'Please fill required fields',
       });
       return;
     }
 
-    if (post.slug === '') {
-      toast({
-        variant: 'destructive',
-        title: 'Slug is required',
-        description: 'Please fill required fields',
-      });
-      return;
-    }
-
-    if (post.meta === '') {
-      toast({
-        variant: 'destructive',
-        title: 'Meta description is required',
-        description: 'Please fill required fields',
-      });
-      return;
-    }
     setLoading(true);
-    console.log(post?.tags);
 
     try {
+      const postData = {
+        ...post,
+        content: editor.getHTML(),
+        author: 'admin',
+
+        thumbnail,
+        id: initialValue?.id,
+      };
+
       if (initialValue) {
-        await editPost({
-          ...post,
-          content: editor.getHTML(),
-          author: 'admin',
-
-          thumbnail,
-          id: initialValue?.id,
-        });
-        router.push('/post');
+        await editPost(postData);
       } else {
-        const formattedTags = post?.tags
-          .split(',')
+        const formattedTags = post.tags
+          ?.split(',')
           .map((tag: any) => tag.trim());
-
-        await createPost({
-          ...post,
-          content: editor.getHTML(),
-          author: 'admin',
-          tags: formattedTags,
-          thumbnail,
-        });
-        router.push('/post');
+        await createPost(postData);
       }
 
       toast({
@@ -125,6 +108,7 @@ const Editor = ({ btnTitle = 'Submit', busy = false, initialValue }: Post) => {
         title: 'Success',
         description: initialValue ? 'Post Updated' : 'Post Created',
       });
+
       setPost({
         title: '',
         content: '',
@@ -132,10 +116,11 @@ const Editor = ({ btnTitle = 'Submit', busy = false, initialValue }: Post) => {
         tags: '',
         meta: '',
       });
+
       setThumbnail('');
       router.refresh();
+      router.push('/post');
     } catch (error: any) {
-      // const errorMessages = error?.message?.map((e: any) => e)
       console.log(error);
 
       toast({

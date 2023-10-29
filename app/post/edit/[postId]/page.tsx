@@ -12,7 +12,7 @@ const page = async ({ params }: { params: { postId: string } }) => {
     );
   }
   return (
-    <div>
+    <div className="w-[70%] mx-auto">
       <Editor initialValue={post} />
     </div>
   );

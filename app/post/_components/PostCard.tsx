@@ -77,12 +77,12 @@ const PostCard: FC<Props> = ({
             )}
             {!post?.thumbnail && <h3 className="text-center">No image</h3>}
           </div>
-          <CardDescription className="flex justify-between items-center">
+          <CardDescription className="flex justify-between py-4  px-6 items-center">
             <p className="">{tags}</p>
             <p>{formattedDate}</p>
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-2 !min-h-[100px]">
+        <CardContent className="space-y-2 !min-h-[100px]  px-6">
           <h3 className="font-semibold first-letter:capitalize">
             {trimText(post?.title, 20)}
           </h3>
@@ -90,7 +90,7 @@ const PostCard: FC<Props> = ({
         </CardContent>
       </Link>
       <CardFooter>
-        <div className="flex justify-end space-x-2">
+        <div className="flex justify-end  ">
           <Button
             disabled={isPending}
             onClick={() => mutate(post.id)}
