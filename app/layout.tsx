@@ -7,6 +7,7 @@ import 'react-clock/dist/Clock.css';
 import { SideBar } from '@/components/SideBar';
 import ToastContainer from '@/components/ToastContainer';
 import LoginModal from '@/components/LoginModal';
+import Provider from '@/components/Provider';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -23,13 +24,15 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
-        <LoginModal />
-        <div className="w-[50px] flex min-h-screen flex-col items-center pt-8 px-5 h-screen fixed inset-y-0 bg-purple-900">
-          <SideBar />
-        </div>
+        <Provider>
+          <LoginModal />
+          <div className="w-[50px] flex min-h-screen flex-col items-center pt-8 px-5 h-screen fixed inset-y-0 bg-purple-900">
+            <SideBar />
+          </div>
 
-        <main className="ml-14">{children}</main>
-        <ToastContainer />
+          <main className="ml-14">{children}</main>
+          <ToastContainer />
+        </Provider>
       </body>
     </html>
   );

@@ -8,9 +8,10 @@ interface PostInterface {
   tags: string[];
   slug: string;
   createdAt: Date;
+  thumbnail: string;
 }
 
-const BlogPostSchema = new mongoose.Schema<PostInterface>(
+const BlogContentSchema = new mongoose.Schema<PostInterface>(
   {
     title: { type: String, required: true, trim: true },
     content: { type: String, required: true },
@@ -20,13 +21,15 @@ const BlogPostSchema = new mongoose.Schema<PostInterface>(
     slug: { type: String, required: true, unique: true },
     tags: { type: [String] },
     meta: { type: String, required: true },
+    thumbnail: { type: String },
   },
   {
     timestamps: true,
   }
 );
 
-const BlogPost =
-  mongoose.models.BlogPost || mongoose.model('BlogPost', BlogPostSchema);
+const BlogContent =
+  mongoose.models.BlogContent ||
+  mongoose.model('BlogContent', BlogContentSchema);
 
-export default BlogPost as Model<PostInterface>;
+export default BlogContent as Model<PostInterface>;

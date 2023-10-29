@@ -15,11 +15,11 @@ export const postSchema = z.object({
   slug: z.string().min(1, errorMessage.INVALID_SLUG),
   tags: z.array(z.string()).min(1, errorMessage.INVALID_TAGS).optional(),
   meta: z.string().min(1, errorMessage.INVALID_META),
+  thumbnail: z.string().optional(),
 });
 
 export const validateSchema = (schema: z.ZodType<any>, value: any) => {
   const result = schema.parse(value);
-  console.log(result);
 
-  if (result) return result;
+  return result;
 };

@@ -31,4 +31,18 @@ export interface Post {
   slug: string;
   tags: string;
   meta: string;
+  thumbnail: string | undefined;
+}
+export interface sortedPost {
+  posts: {
+    title: string;
+    content: string;
+    author: string;
+    slug: string;
+    tags: string[];
+    meta: string;
+    thumbnail: string | undefined;
+    id: string;
+    createdAt: string;
+  }[];
 }

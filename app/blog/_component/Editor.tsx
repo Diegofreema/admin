@@ -13,12 +13,17 @@ import GalleryModal, { ImageResult } from './GalleryModal';
 import { Input } from '@/components/ui/input';
 import SeoForm, { SeoResult } from './SeoForm';
 import ActionButton from './ActionButton';
-import { createPost } from '@/lib/actions/post';
+import { createPost, editPost } from '@/lib/actions/post';
 import { useToast } from '@/components/ui/use-toast';
+import { UploadButton } from '@/utils/uploadthing';
+import Img from 'next/image';
+import { X } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { Button } from '@/components/ui/button';
 export interface Props extends SeoResult {
   title: string;
   content: string;
-  admin: string;
+  id?: string;
 }
 
 interface Post {
@@ -29,8 +34,10 @@ interface Post {
 
 const Editor = ({ btnTitle = 'Submit', busy = false, initialValue }: Post) => {
   const [selectionRange, setSelectionRange] = useState<Range>();
+  const router = useRouter();
   const [showGallery, setShowGallery] = useState(false);
   const [seoInitial, setSeoInitial] = useState<SeoResult>();
+  const [loading, setLoading] = useState(false);
   const { toast } = useToast();
   const [post, setPost] = useState<Props>({
     title: '',
@@ -38,8 +45,10 @@ const Editor = ({ btnTitle = 'Submit', busy = false, initialValue }: Post) => {
     slug: '',
     tags: '',
     meta: '',
-    admin: '',
   });
+
+  const [thumbnail, setThumbnail] = useState<string | undefined>('');
+
   const handleTitleChange: ChangeEventHandler<HTMLInputElement> = ({
     target,
   }) => {
@@ -65,14 +74,6 @@ const Editor = ({ btnTitle = 'Submit', busy = false, initialValue }: Post) => {
       return;
     }
 
-    if (post.content === '<p></p>') {
-      toast({
-        variant: 'destructive',
-        title: 'Content is required',
-        description: 'Please fill required fields',
-      });
-      return;
-    }
     if (post.slug === '') {
       toast({
         variant: 'destructive',
@@ -90,27 +91,49 @@ const Editor = ({ btnTitle = 'Submit', busy = false, initialValue }: Post) => {
       });
       return;
     }
-    try {
-      const { tags } = post;
-      const formattedTags = tags.split(',').map((tag: any) => tag.trim());
-      console.log({
-        ...post,
-        content: editor.getHTML(),
-        author: 'admin',
-        tags: formattedTags,
-      });
+    setLoading(true);
+    console.log(post?.tags);
 
-      await createPost({
-        ...post,
-        content: editor.getHTML(),
-        author: 'admin',
-        tags: formattedTags,
-      });
+    try {
+      if (initialValue) {
+        await editPost({
+          ...post,
+          content: editor.getHTML(),
+          author: 'admin',
+
+          thumbnail,
+          id: initialValue?.id,
+        });
+        router.push('/post');
+      } else {
+        const formattedTags = post?.tags
+          .split(',')
+          .map((tag: any) => tag.trim());
+
+        await createPost({
+          ...post,
+          content: editor.getHTML(),
+          author: 'admin',
+          tags: formattedTags,
+          thumbnail,
+        });
+        router.push('/post');
+      }
+
       toast({
         variant: 'success',
         title: 'Success',
-        description: 'Post Created',
+        description: initialValue ? 'Post Updated' : 'Post Created',
       });
+      setPost({
+        title: '',
+        content: '',
+        slug: '',
+        tags: '',
+        meta: '',
+      });
+      setThumbnail('');
+      router.refresh();
     } catch (error: any) {
       // const errorMessages = error?.message?.map((e: any) => e)
       console.log(error);
@@ -118,17 +141,11 @@ const Editor = ({ btnTitle = 'Submit', busy = false, initialValue }: Post) => {
       toast({
         variant: 'destructive',
         title: 'Something went wrong',
-        description: 'Please fill required fields',
+        description: error?.message,
       });
+    } finally {
+      setLoading(false);
     }
-    setPost({
-      title: '',
-      content: '',
-      slug: '',
-      tags: '',
-      meta: '',
-      admin: '',
-    });
   };
   const editor = useEditor({
     extensions: [
@@ -189,10 +206,42 @@ const Editor = ({ btnTitle = 'Submit', busy = false, initialValue }: Post) => {
       setSeoInitial({ slug, tags, meta });
     }
   }, [initialValue, editor]);
+  const showThumbnail = () => {
+    if (thumbnail) {
+      return (
+        <div className="w-[100px] min-h-[100px] relative flex items-center justify-center">
+          <X
+            className="absolute top-0 right-1 z-10 text-red-500  cursor-pointer"
+            onClick={() => setThumbnail('')}
+            size={20}
+          />
+          <Img fill src={thumbnail} alt="Upload" className="object-cover" />
+        </div>
+      );
+    }
+
+    return (
+      <UploadButton
+        endpoint="thumbnail"
+        onClientUploadComplete={(res) => setThumbnail(res?.[0]?.url)}
+        onUploadError={(err) => console.log(err)}
+      />
+    );
+  };
+  const buttonTitle = initialValue ? 'Edit' : 'Submit';
   return (
     <div className="pb-24">
       <div className="p-3 ">
         <div className="sticky top-0 z-10 bg-white rounded-md p-2">
+          <div className="flex justify-between items-center !my-5">
+            <div className="space-x-3 flex flex-col items-center">
+              <p>Thumbnail</p>
+              {showThumbnail()}
+            </div>
+            <Button variant="purple" disabled={loading} onClick={handleSubmit}>
+              {buttonTitle}
+            </Button>
+          </div>
           <Input
             placeholder="Title"
             type="text"
@@ -219,14 +268,6 @@ const Editor = ({ btnTitle = 'Submit', busy = false, initialValue }: Post) => {
         onImageSelect={(image) => {}}
         onSelection={handleImageSelection}
       />
-      <div className="flex justify-end !my-5">
-        <ActionButton
-          blog
-          title={btnTitle}
-          busy={busy}
-          onClick={handleSubmit}
-        />
-      </div>
     </div>
   );
 };
