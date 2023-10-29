@@ -1,6 +1,5 @@
 import React from 'react';
 import Editor from './_component/Editor';
-import { readAllImages } from '@/lib/actions/writeUps';
 
 type Props = {};
 
