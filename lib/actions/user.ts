@@ -150,6 +150,19 @@ export async function deleteProject(id: string) {
     throw new Error('Failed to delete project');
   }
 }
+export async function deleteProjectV(id: string) {
+  try {
+    connectToDB();
+
+    await ProjectVideo.findByIdAndDelete({
+      _id: id,
+    });
+  } catch (error) {
+    console.log(error);
+
+    throw new Error('Failed to delete project');
+  }
+}
 export async function createProjectVideo(name: string, videoUrl: string) {
   try {
     connectToDB();

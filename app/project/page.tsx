@@ -3,34 +3,23 @@ import Image from 'next/image';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
 
-import { fetchProject, fetchProjectVideos } from '@/lib/actions/user';
-import { Card, CardContent } from '@/components/ui/card';
+import {
+  deleteProjectImg,
+  fetchProject,
+  fetchProjectVideos,
+} from '@/lib/actions/user';
+import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import AddProject from '@/components/AddProject';
 import AddProjectVideo from './_components/AddProjectVideo';
+import { Button } from '@/components/ui/button';
+import ProjectComponent from './_components/ProjectComponent';
 export default async function Project() {
   const projects = await fetchProject();
   const videos = await fetchProjectVideos();
 
   const displayProjectImg =
     projects?.length > 0 ? (
-      projects?.map((item, i) => (
-        <Card key={i} className="!h-fit mb-4">
-          <CardContent className="flex justify-between flex-col sm:!flex-row space-y-2 items-center pt-4">
-            <div className="rounded-full relative w-20 h-20 overflow-hidden">
-              <Image
-                fill
-                priority
-                alt="image"
-                src={item.imgUrl}
-                className=" object-cover"
-              />
-            </div>
-            <div>
-              <p className="uppercase text-bold">{item.name}</p>
-            </div>
-          </CardContent>
-        </Card>
-      ))
+      projects?.map((item, i) => <ProjectComponent key={i} item={item} />)
     ) : (
       <h2 className="text-center font-bold text-xl">No Project Image Yet</h2>
     );
