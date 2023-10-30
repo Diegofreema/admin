@@ -10,16 +10,12 @@ export default async function Event() {
   const displayEvents =
     events?.length > 0 ? (
       events?.map((item, i) => {
-        const utcMoment = moment.utc(item?.date);
-        const date = utcMoment.tz('Africa/Lagos').format('DD/MM/YYYY');
-        const time = utcMoment.tz('Africa/Lagos').format('hh:mm A');
         return (
           <EventCard
             key={i}
             venue={item?.venue}
             name={item?.name}
-            date={date}
-            time={time}
+            date={item?.date.toString()}
             imgUrl={item?.imgUrl}
             id={item?._id.toString()}
             type="event"

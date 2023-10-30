@@ -29,7 +29,7 @@ export async function createPost(post: PostType) {
   } catch (error: any) {
     console.log(error);
 
-    return { message: error.message };
+    return { message: 'Please fill all fields and try again later' };
   }
 }
 export async function fetchSinglePost(id: string) {

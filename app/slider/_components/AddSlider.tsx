@@ -18,52 +18,74 @@ import { useRouter } from 'next/navigation';
 
 import { useEffect, useState } from 'react';
 import { useToast } from '@/components/ui/use-toast';
-import { createSlider } from '@/lib/actions/slider';
+import { createSlider, editSlider } from '@/lib/actions/slider';
 import UploadComponent from '@/components/Upload';
 import { Button } from '@/components/ui/button';
+import { useEdit } from '@/hook/useEdit';
+import { set } from 'nprogress';
 
-const formSchema = z.object({
-  heading: z.string().min(2, {
-    message: 'Username must be at least 2 characters.',
-  }),
-
-  imageUrl: z.string().min(2, {
-    message: 'Image url is required',
-  }),
-  description: z.string().min(3, {
-    message: 'Venue is required',
-  }),
-});
 type Props = {};
 
 const AddSlider = (props: Props) => {
   const [isMounted, setIsMounted] = useState(false);
+  const { editData, edit, setEdit } = useEdit();
+  const [values, setValues] = useState(editData);
+  const [loading, setLoading] = useState(false);
+
   useEffect(() => {
     setIsMounted(true);
   }, []);
+  useEffect(() => {
+    setValues(editData);
+  }, [editData]);
+  const requiredFields = ['heading', 'description', 'imgUrl'];
+  const emptyFields = requiredFields.filter(
+    (field) => !values[field as keyof Props]
+  );
+
   const { toast } = useToast();
   const router = useRouter();
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      heading: '',
-      imageUrl: '',
 
-      description: '',
-    },
-  });
-
-  const isLoading = form.formState.isSubmitting;
-  const onInvalid = (errors: any) => console.error(errors);
-  async function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(e: any) {
+    e.preventDefault();
+    if (emptyFields.length) {
+      toast({
+        variant: 'destructive',
+        title: `${emptyFields.join(' and ').toUpperCase()} ${
+          emptyFields.length > 1 ? 'are' : 'is'
+        } required`,
+        description: 'Please fill required fields',
+      });
+      return;
+    }
+    setLoading(true);
     try {
-      await createSlider(values.heading, values.imageUrl, values.description);
+      edit && setEdit();
+      edit
+        ? await editSlider(
+            editData.id,
+            values.heading as any,
+            values.imgUrl,
+            values.description as any
+          )
+        : await createSlider(
+            values.heading as any,
+            values.imgUrl,
+            values.description as any
+          );
       toast({
         variant: 'success',
         title: 'Success',
-        description: 'You have added a new Event',
+        description: edit
+          ? 'You have edited a slider'
+          : 'You have added a slider',
       });
-      form.reset();
+      setValues({
+        heading: '',
+        imgUrl: '',
+        description: '',
+        id: '',
+      });
       router.refresh();
     } catch (error) {
       toast({
@@ -71,73 +93,55 @@ const AddSlider = (props: Props) => {
         title: 'Error',
         description: 'Something went wrong',
       });
+    } finally {
+      setLoading(false);
     }
   }
   if (!isMounted) return null;
   return (
     <div>
-      <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onSubmit, onInvalid)}
-          className="!space-y-4"
+      <form onSubmit={onSubmit} className="space-y-6">
+        <Input
+          placeholder="Heading"
+          value={values.heading}
+          onChange={(e) => {
+            setValues((prev) => ({
+              ...prev,
+              heading: e.target.value,
+            }));
+          }}
+        />
+        <Input
+          placeholder="Description"
+          value={values.description}
+          onChange={(e) => {
+            setValues((prev) => ({
+              ...prev,
+              description: e.target.value,
+            }));
+          }}
+        />
+
+        <UploadComponent
+          endpoint="sliderImg"
+          value={values.imgUrl}
+          onChange={(url: any) => {
+            setValues((prev) => ({
+              ...prev,
+              imgUrl: url,
+            }));
+          }}
+        />
+
+        <Button
+          disabled={loading}
+          variant={'purple'}
+          className="w-full"
+          type="submit"
         >
-          <FormField
-            control={form.control}
-            name="heading"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Heading</FormLabel>
-                <FormControl>
-                  <Input placeholder="Heading" {...field} />
-                </FormControl>
-
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="description"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Description</FormLabel>
-                <FormControl>
-                  <Input placeholder="Description" {...field} />
-                </FormControl>
-
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="imageUrl"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Image</FormLabel>
-                <FormControl>
-                  <UploadComponent
-                    endpoint="sliderImg"
-                    value={field.value}
-                    onChange={field.onChange}
-                  />
-                </FormControl>
-
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <Button
-            disabled={isLoading}
-            variant={'purple'}
-            className="w-full"
-            type="submit"
-          >
-            Submit
-          </Button>
-        </form>
-      </Form>
+          {edit ? 'Update' : ' Submit'}
+        </Button>
+      </form>
     </div>
   );
 };

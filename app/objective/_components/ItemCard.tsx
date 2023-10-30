@@ -3,6 +3,9 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { useToast } from '@/components/ui/use-toast';
 import { useDeleteItem } from '@/hook/useDeleteItems';
+import { useEditGoal } from '@/hook/useEditGoals';
+import { useEditObj } from '@/hook/useEditObj';
+import { useEditPriority } from '@/hook/useEditPriority';
 import { useUser } from '@/hook/useUser';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
@@ -16,6 +19,9 @@ type Props = {
 
 const ItemCard = ({ description, heading, variant, id }: Props) => {
   const { getId, onOpen, getVariant } = useDeleteItem();
+  const { getEditGoal, setEdit } = useEditGoal();
+  const { getEditPriority, setEdit: setEditPriority } = useEditPriority();
+  const { getEditObj, setEdit: setEditObj } = useEditObj();
   const { loggedIn } = useUser();
   const router = useRouter();
   const { toast } = useToast();
@@ -35,6 +41,31 @@ const ItemCard = ({ description, heading, variant, id }: Props) => {
     getId(id);
     getVariant(variant);
   };
+  const handleEditFn = (id: string, heading: string, description: string) => {
+    if (variant === 'GOAL') {
+      getEditGoal({
+        heading,
+        description,
+        id,
+      });
+      setEdit();
+    } else if (variant === 'PRIORITY') {
+      getEditPriority({
+        heading,
+        description,
+        id,
+      });
+      setEditPriority();
+    } else if (variant === 'OBJECTIVE') {
+      getEditObj({
+        heading,
+        description,
+        id,
+      });
+      setEditObj();
+    }
+  };
+
   return (
     <Card className="mb-5">
       <CardContent className="space-y-4">
@@ -47,7 +78,14 @@ const ItemCard = ({ description, heading, variant, id }: Props) => {
           <p>{description}</p>
         </div>
       </CardContent>
-      <CardFooter>
+      <CardFooter className="flex items-center justify-between space-x-3">
+        <Button
+          variant={'purple'}
+          className="w-full"
+          onClick={() => handleEditFn(id, heading, description)}
+        >
+          Edit
+        </Button>
         <Button
           variant={'destructive'}
           className="w-full"

@@ -31,6 +31,25 @@ export async function fetchGoal() {
     throw new Error('Failed to get Goals');
   }
 }
+export async function editGoal(
+  id: string,
+  heading: string,
+  description: string
+) {
+  try {
+    connectToDB();
+
+    const goals = await Goal.findByIdAndUpdate(id, {
+      heading,
+      description,
+    });
+    return goals;
+  } catch (error) {
+    console.log(error);
+
+    throw new Error('Failed to update Goals');
+  }
+}
 export async function createObj(heading: string, description: string) {
   try {
     connectToDB();
@@ -57,6 +76,24 @@ export async function fetchObj() {
     throw new Error('Failed to get Objectives');
   }
 }
+export async function editObj(
+  id: string,
+  heading: string,
+  description: string
+) {
+  try {
+    connectToDB();
+
+    await Obj.findByIdAndUpdate(id, {
+      heading,
+      description,
+    });
+  } catch (error) {
+    console.log(error);
+
+    throw new Error('Failed to update Objectives');
+  }
+}
 export async function createPriority(heading: string, description: string) {
   try {
     connectToDB();
@@ -76,6 +113,21 @@ export async function fetchPriorities() {
     connectToDB();
 
     const priorities = await Priority.find();
+    return priorities;
+  } catch (error) {
+    console.log(error);
+
+    throw new Error('Failed to get Priorities');
+  }
+}
+export async function editPr(id: string, heading: string, description: string) {
+  try {
+    connectToDB();
+
+    const priorities = await Priority.findByIdAndUpdate(id, {
+      heading,
+      description,
+    });
     return priorities;
   } catch (error) {
     console.log(error);

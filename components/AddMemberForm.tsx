@@ -1,36 +1,14 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
-import { zodResolver } from '@hookform/resolvers/zod';
-import * as z from 'zod';
-import { useForm } from 'react-hook-form';
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Button } from './ui/button';
 import UploadComponent from './Upload';
 import { useToast } from './ui/use-toast';
 import { useRouter } from 'next/navigation';
-import { createMember } from '@/lib/actions/user';
+import { createMember, editMember } from '@/lib/actions/user';
+import { useEditTeam } from '@/hook/useEditTeam';
 
-const formSchema = z.object({
-  name: z.string().min(2, {
-    message: 'Username must be at least 2 characters.',
-  }),
-  job: z.string().min(2, {
-    message: 'Role must be at least 2 characters.',
-  }),
-  imageUrl: z.string().min(2, {
-    message: 'Image url is required',
-  }),
-});
 type Props = {};
 
 const AddMemberForm = (props: Props) => {
@@ -38,28 +16,50 @@ const AddMemberForm = (props: Props) => {
   useEffect(() => {
     setIsMounted(true);
   }, []);
+  const { editData, edit, setEdit } = useEditTeam();
+  const [values, setValues] = useState(editData);
+  const [loading, setLoading] = useState(false);
   const { toast } = useToast();
   const router = useRouter();
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      name: '',
-      imageUrl: '',
-      job: '',
-    },
-  });
+  const requiredFields = ['name', 'job', 'imgUrl'];
+  const emptyFields = requiredFields.filter(
+    (field) => !values[field as keyof Props]
+  );
+  useEffect(() => {
+    setValues(editData);
+  }, [editData]);
 
-  const isLoading = form.formState.isSubmitting;
-  const onInvalid = (errors: any) => console.error(errors);
-  async function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(e: any) {
+    e.preventDefault();
+    if (emptyFields.length) {
+      toast({
+        variant: 'destructive',
+        title: `${emptyFields.join(' and ').toUpperCase()} ${
+          emptyFields.length > 1 ? 'are' : 'is'
+        } required`,
+        description: 'Please fill required fields',
+      });
+      return;
+    }
+    setLoading(true);
     try {
-      await createMember(values.name, values.job, values.imageUrl);
+      edit && setEdit();
+      edit
+        ? await editMember(editData.id, values.name, values.job, values.imgUrl)
+        : await createMember(values.name, values.job, values.imgUrl);
       toast({
         variant: 'success',
         title: 'Success',
-        description: 'You have added a new member to your team',
+        description: edit
+          ? 'You have updated a member'
+          : 'You have added a new member to your team',
       });
-      form.reset();
+      setValues({
+        name: '',
+        job: '',
+        imgUrl: '',
+        id: '',
+      });
       router.refresh();
     } catch (error) {
       toast({
@@ -67,6 +67,8 @@ const AddMemberForm = (props: Props) => {
         title: 'Error',
         description: 'Something went wrong',
       });
+    } finally {
+      setLoading(false);
     }
   }
   if (!isMounted) {
@@ -74,67 +76,48 @@ const AddMemberForm = (props: Props) => {
   }
   return (
     <div>
-      <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onSubmit, onInvalid)}
-          className="!space-y-4"
+      <form onSubmit={onSubmit} className="space-y-6">
+        <Input
+          placeholder="Name"
+          value={values.name}
+          onChange={(e) => {
+            setValues((prev) => ({
+              ...prev,
+              name: e.target.value,
+            }));
+          }}
+        />
+        <Input
+          placeholder="Job"
+          value={values.job}
+          onChange={(e) => {
+            setValues((prev) => ({
+              ...prev,
+              job: e.target.value,
+            }));
+          }}
+        />
+
+        <UploadComponent
+          endpoint="teamImage"
+          value={values.imgUrl}
+          onChange={(url: any) => {
+            setValues((prev) => ({
+              ...prev,
+              imgUrl: url,
+            }));
+          }}
+        />
+
+        <Button
+          disabled={loading}
+          variant={'purple'}
+          className="w-full"
+          type="submit"
         >
-          <FormField
-            control={form.control}
-            name="name"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Name</FormLabel>
-                <FormControl>
-                  <Input placeholder="Full Name" {...field} />
-                </FormControl>
-
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="job"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Role</FormLabel>
-                <FormControl>
-                  <Input placeholder="Role" {...field} />
-                </FormControl>
-
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="imageUrl"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel> Image</FormLabel>
-                <FormControl>
-                  <UploadComponent
-                    endpoint="teamImage"
-                    value={field.value}
-                    onChange={field.onChange}
-                  />
-                </FormControl>
-
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <Button
-            disabled={isLoading}
-            variant={'purple'}
-            className="w-full"
-            type="submit"
-          >
-            Submit
-          </Button>
-        </form>
-      </Form>
+          {edit ? 'Update' : ' Submit'}
+        </Button>
+      </form>
     </div>
   );
 };

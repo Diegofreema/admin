@@ -71,6 +71,15 @@ const Editor = ({ btnTitle = 'Submit', busy = false, initialValue }: Post) => {
       (field) => !post[field as keyof Props]
     );
 
+    if (editor.getHTML() === '<p></p>') {
+      toast({
+        variant: 'destructive',
+        title: 'Empty Post',
+        description: 'Please add content',
+      });
+      return;
+    }
+
     if (emptyFields.length) {
       toast({
         variant: 'destructive',
@@ -126,7 +135,7 @@ const Editor = ({ btnTitle = 'Submit', busy = false, initialValue }: Post) => {
       toast({
         variant: 'destructive',
         title: 'Something went wrong',
-        description: error?.message,
+        description: 'Please fill all fields',
       });
     } finally {
       setLoading(false);

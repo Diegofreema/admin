@@ -46,3 +46,23 @@ export async function deleteSlider(id: string) {
     throw new Error('Failed to delete Slider');
   }
 }
+export async function editSlider(
+  id: string,
+  heading: string,
+  imgUrl: string,
+  description: string
+) {
+  try {
+    connectToDB();
+
+    await SliderImg.findByIdAndUpdate(id, {
+      heading,
+      description,
+      imgUrl,
+    });
+  } catch (error) {
+    console.log(error);
+
+    throw new Error('Failed to delete Slider');
+  }
+}

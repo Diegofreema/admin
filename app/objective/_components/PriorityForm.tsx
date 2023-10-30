@@ -19,44 +19,62 @@ import { useRouter } from 'next/navigation';
 import { createMember } from '@/lib/actions/user';
 import { useToast } from '@/components/ui/use-toast';
 import { Button } from '@/components/ui/button';
-import { createObj, createPriority } from '@/lib/actions/writeUps';
+import { createObj, createPriority, editPr } from '@/lib/actions/writeUps';
+import { useEditPriority } from '@/hook/useEditPriority';
 
-const formSchema = z.object({
-  heading: z.string().min(2, {
-    message: 'Username must be at least 2 characters.',
-  }),
-  des: z.string().min(2, {
-    message: 'Role must be at least 2 characters.',
-  }),
-});
 type Props = {};
 
 const PriorityForm = (props: Props) => {
   const [isMounted, setIsMounted] = useState(false);
+  const { editData, edit, setEdit } = useEditPriority();
+  const [values, setValues] = useState(editData);
+  const [loading, setLoading] = useState(false);
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+  useEffect(() => {
+    setValues(editData);
+  }, [editData]);
   useEffect(() => {
     setIsMounted(true);
   }, []);
   const { toast } = useToast();
   const router = useRouter();
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      heading: '',
-      des: '',
-    },
-  });
+  const requiredFields = ['heading', 'description'];
+  const emptyFields = requiredFields.filter(
+    (field) => !values[field as keyof Props]
+  );
 
-  const isLoading = form.formState.isSubmitting;
-  const onInvalid = (errors: any) => console.error(errors);
-  async function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(e: any) {
+    e.preventDefault();
+    if (emptyFields.length) {
+      toast({
+        variant: 'destructive',
+        title: `${emptyFields.join(' and ').toUpperCase()} ${
+          emptyFields.length > 1 ? 'are' : 'is'
+        } required`,
+        description: 'Please fill required fields',
+      });
+      return;
+    }
+    setLoading(true);
     try {
-      await createPriority(values.heading, values.des);
+      edit && setEdit();
+      edit
+        ? await editPr(editData.id, values.heading, values.description)
+        : await createPriority(values.heading, values.description);
       toast({
         variant: 'success',
         title: 'Success',
-        description: 'You have added an Priority',
+        description: edit
+          ? 'You have edited an Priority'
+          : 'You have added an Priority',
       });
-      form.reset();
+      setValues({
+        heading: '',
+        description: '',
+        id: '',
+      });
       router.refresh();
     } catch (error) {
       toast({
@@ -64,6 +82,8 @@ const PriorityForm = (props: Props) => {
         title: 'Error',
         description: 'Something went wrong',
       });
+    } finally {
+      setLoading(false);
     }
   }
   if (!isMounted) {
@@ -71,50 +91,38 @@ const PriorityForm = (props: Props) => {
   }
   return (
     <div className="container mx-auto">
-      <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onSubmit, onInvalid)}
-          className="!space-y-4"
+      <form onSubmit={onSubmit} className="space-y-6">
+        <Input
+          placeholder="Heading"
+          value={values.heading}
+          onChange={(e) => {
+            setValues((prev) => ({
+              ...prev,
+              heading: e.target.value,
+            }));
+          }}
+        />
+
+        <Input
+          placeholder="Description"
+          value={values.description}
+          onChange={(e) => {
+            setValues((prev) => ({
+              ...prev,
+              description: e.target.value,
+            }));
+          }}
+        />
+
+        <Button
+          disabled={loading}
+          variant={'purple'}
+          className="w-full"
+          type="submit"
         >
-          <FormField
-            control={form.control}
-            name="heading"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Heading</FormLabel>
-                <FormControl>
-                  <Input {...field} />
-                </FormControl>
-
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="des"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Description</FormLabel>
-                <FormControl>
-                  <Input {...field} />
-                </FormControl>
-
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <Button
-            disabled={isLoading}
-            variant={'purple'}
-            className="w-full"
-            type="submit"
-          >
-            Submit
-          </Button>
-        </form>
-      </Form>
+          {edit ? 'Update' : 'Submit'}
+        </Button>
+      </form>
     </div>
   );
 };

@@ -1,4 +1,3 @@
-import { deleteEvent, deleteMember } from '@/lib/actions/user';
 import { create } from 'zustand';
 
 interface ModalState {

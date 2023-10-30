@@ -28,6 +28,26 @@ export async function createMember(name: string, job: string, imgUrl: string) {
     throw new Error('Failed to Create Member');
   }
 }
+export async function editMember(
+  id: string,
+  name: string,
+  job: string,
+  imgUrl: string
+) {
+  try {
+    connectToDB();
+
+    await Team.findByIdAndUpdate(id, {
+      name: name.toLowerCase(),
+      job,
+      imgUrl,
+    });
+  } catch (error) {
+    console.log(error);
+
+    return { message: 'Failed to edit Member' };
+  }
+}
 export async function createVideo(videoUrl: string) {
   try {
     connectToDB();
@@ -55,11 +75,11 @@ export async function createImage(imgUrl: string) {
   }
 }
 export async function createEvent(
-  name: string,
-  imgUrl: string,
-  venue: string,
-  date: Date,
-  description: string
+  name?: string,
+  imgUrl?: string,
+  venue?: string,
+  date?: Date,
+  description?: string
 ) {
   console.log(description);
 
@@ -76,7 +96,31 @@ export async function createEvent(
   } catch (error) {
     console.log(error);
 
-    throw new Error('Failed to Create EventModel');
+    throw new Error('Failed to Create Event');
+  }
+}
+export async function editEvent(
+  id: string,
+  name?: string,
+  imgUrl?: string,
+  venue?: string,
+  date?: Date,
+  description?: string
+) {
+  try {
+    connectToDB();
+
+    await EventModel.findByIdAndUpdate(id, {
+      name,
+      imgUrl,
+      venue,
+      date,
+      description,
+    });
+  } catch (error) {
+    console.log(error);
+
+    throw new Error('Failed to edit Event');
   }
 }
 export async function createProject(name: string, imgUrl: string) {
@@ -105,6 +149,32 @@ export async function createProjectVideo(name: string, videoUrl: string) {
     console.log(error);
 
     throw new Error('Failed to add Project Video');
+  }
+}
+export async function deleteProjectVideo(id: string) {
+  try {
+    connectToDB();
+
+    await ProjectVideo.findByIdAndDelete({
+      _id: id,
+    });
+  } catch (error) {
+    console.log(error);
+
+    throw new Error('Failed to delete Project Video');
+  }
+}
+export async function deleteProjectImg(id: string) {
+  try {
+    connectToDB();
+
+    await Project.findByIdAndDelete({
+      _id: id,
+    });
+  } catch (error) {
+    console.log(error);
+
+    throw new Error('Failed to delete Project image');
   }
 }
 export async function fetchTeam() {
