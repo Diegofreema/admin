@@ -22,7 +22,7 @@ interface Props {
 
 const InfiniteScrollCom: FC<Props> = ({ posts }): JSX.Element => {
   return (
-    <div className="grid grid-cols-3 w-[80%] mx-auto gap-5">
+    <div className="grid !grid-cols-1  md:!grid-cols-3 w-[80%] mx-auto gap-5">
       {posts?.map((post) => {
         const tags = post?.tags?.map((tag) => <span key={tag}>#{tag}</span>);
         const formattedDate = dateFormat(post?.createdAt, 'd-mmm-yyyy');

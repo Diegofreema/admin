@@ -134,7 +134,20 @@ export async function createProject(name: string, imgUrl: string) {
   } catch (error) {
     console.log(error);
 
-    throw new Error('Failed to Create Member');
+    throw new Error('Failed to create project');
+  }
+}
+export async function deleteProject(id: string) {
+  try {
+    connectToDB();
+
+    await Project.findByIdAndDelete({
+      _id: id,
+    });
+  } catch (error) {
+    console.log(error);
+
+    throw new Error('Failed to delete project');
   }
 }
 export async function createProjectVideo(name: string, videoUrl: string) {

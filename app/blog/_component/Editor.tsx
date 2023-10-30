@@ -65,6 +65,7 @@ const Editor = ({ btnTitle = 'Submit', busy = false, initialValue }: Post) => {
   };
   const handleSubmit = async () => {
     if (!editor) return;
+    console.log(initialValue?.tags);
 
     const requiredFields = ['title', 'slug', 'meta'];
     const emptyFields = requiredFields.filter(
@@ -100,16 +101,21 @@ const Editor = ({ btnTitle = 'Submit', busy = false, initialValue }: Post) => {
         author: 'admin',
 
         thumbnail,
-        id: initialValue?.id,
       };
-
       if (initialValue) {
-        await editPost(postData);
+        await editPost({
+          ...postData,
+
+          id: initialValue?.id,
+        });
       } else {
         const formattedTags = post.tags
           ?.split(',')
           .map((tag: any) => tag.trim());
-        await createPost(postData);
+        await createPost({
+          ...postData,
+          tags: formattedTags,
+        });
       }
 
       toast({
@@ -125,12 +131,13 @@ const Editor = ({ btnTitle = 'Submit', busy = false, initialValue }: Post) => {
         tags: '',
         meta: '',
       });
+      editor.commands.setContent('<p></p>');
 
       setThumbnail('');
       router.refresh();
       router.push('/post');
     } catch (error: any) {
-      console.log(error);
+      console.log(error.message);
 
       toast({
         variant: 'destructive',
@@ -194,7 +201,8 @@ const Editor = ({ btnTitle = 'Submit', busy = false, initialValue }: Post) => {
   };
   useEffect(() => {
     if (initialValue) {
-      setPost({ ...initialValue });
+      const formattedTags = initialValue.tags.map((tag: any) => tag.trim());
+      setPost({ ...initialValue, tags: formattedTags });
       editor?.commands.setContent(initialValue.content);
       const { slug, tags, meta } = initialValue;
       setSeoInitial({ slug, tags, meta });

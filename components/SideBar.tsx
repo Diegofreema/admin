@@ -26,6 +26,7 @@ import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { IconAdjustmentsHorizontal } from '@tabler/icons-react';
 import { useUser } from '@/hook/useUser';
+import { ScrollArea } from './ui/scroll-area';
 interface NavbarLinkProps {
   icon: typeof IconHome2;
   label: string;
@@ -93,26 +94,28 @@ export function SideBar() {
   if (!isMounted) return null;
 
   return (
-    <nav className="!p-4">
-      <div className="flex items-center justify-center">
-        <Avatar>
-          <AvatarImage src="/butterfly.jpeg" />
-          <AvatarFallback>IMG</AvatarFallback>
-        </Avatar>
-      </div>
+    <nav className="!p-4 !z-40">
+      <ScrollArea>
+        <div className="flex items-center justify-center">
+          <Avatar>
+            <AvatarImage src="/butterfly.jpeg" />
+            <AvatarFallback>IMG</AvatarFallback>
+          </Avatar>
+        </div>
 
-      <div className="flex flex-col justify-center items-center h-full">
-        <div className="flex flex-col justify-center items-center space-y-5">
-          {links}
-          <div className="self-end cursor-pointer">
-            {!loggedIn ? (
-              <IconLogin size={30} color="white" onClick={onOpen} />
-            ) : (
-              <IconLogout size={30} color="white" onClick={logout} />
-            )}
+        <div className="flex flex-col justify-center items-center h-full">
+          <div className="flex flex-col justify-center items-center space-y-5">
+            {links}
+            <div className="self-end cursor-pointer">
+              {!loggedIn ? (
+                <IconLogin size={30} color="white" onClick={onOpen} />
+              ) : (
+                <IconLogout size={30} color="white" onClick={logout} />
+              )}
+            </div>
           </div>
         </div>
-      </div>
+      </ScrollArea>
     </nav>
   );
 }

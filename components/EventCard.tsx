@@ -85,7 +85,7 @@ const EventCard = ({
   };
 
   const handleEditEvent = (value: {
-    eventName?: string;
+    name?: string;
     venue?: string;
     description?: string;
     imgUrl?: string;
@@ -93,7 +93,7 @@ const EventCard = ({
     id: string;
   }) => {
     getEditEventData({
-      eventName: value.eventName,
+      name: value.name,
       venue: value.venue,
       description: value.description,
       imgUrl: value.imgUrl,
@@ -127,7 +127,7 @@ const EventCard = ({
         description,
         id,
         imgUrl,
-        eventName: name,
+        name,
         venue,
       });
     } else if (pathname === '/slider') {
