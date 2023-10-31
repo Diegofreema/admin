@@ -14,12 +14,17 @@ import {
 import { Input } from '@/components/ui/input';
 
 import { useRouter } from 'next/navigation';
-import { createProject, createProjectVideo } from '@/lib/actions/user';
+import {
+  createProject,
+  createProjectVideo,
+  editProjectV,
+} from '@/lib/actions/user';
 import { useEffect, useState } from 'react';
 import { useUser } from '@/hook/useUser';
 import UploadComponent from '@/components/Upload';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
+import { useEditVideo } from '@/hook/useEditVideo';
 
 const formSchema = z.object({
   name: z.string().min(2, {
@@ -34,6 +39,7 @@ type Props = {};
 
 const AddProjectVideo = (props: Props) => {
   const [isMounted, setIsMounted] = useState(false);
+  const { editData, edit, setEdit } = useEditVideo();
   const { loggedIn } = useUser();
   const router = useRouter();
   const { toast } = useToast();
@@ -51,7 +57,6 @@ const AddProjectVideo = (props: Props) => {
   useEffect(() => {
     setIsMounted(true);
   }, []);
-
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -59,12 +64,20 @@ const AddProjectVideo = (props: Props) => {
       videoUrl: '',
     },
   });
+  useEffect(() => {
+    if (editData) {
+      form.setValue('name', editData.name);
+      form.setValue('videoUrl', editData.videoUrl);
+    }
+  }, [form, editData]);
 
   const isLoading = form.formState.isSubmitting;
   const onInvalid = (errors: any) => console.error(errors);
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
-      await createProjectVideo(values.name, values.videoUrl);
+      edit
+        ? await editProjectV(editData.id as any, values.name, values.videoUrl)
+        : await createProjectVideo(values.name, values.videoUrl);
       toast({
         variant: 'success',
         title: 'Success',

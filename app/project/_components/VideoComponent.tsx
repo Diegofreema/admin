@@ -1,55 +1,46 @@
 'use client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
-import { useToast } from '@/components/ui/use-toast';
 import { useDeleteProject } from '@/hook/useDeleteProject';
-import { useProjectEdit } from '@/hook/useEditProject';
-import Image from 'next/image';
-import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useEditVideo } from '@/hook/useEditVideo';
 
 type Props = {
   item: {
-    imgUrl: string;
+    videoUrl: string;
     name: string;
     _id: string;
   };
 };
 
-const ProjectComponent = ({ item }: Props) => {
-  const { getEditData, setEdit } = useProjectEdit();
+const VideoComponent = ({ item }: Props) => {
+  const { getEditData, setEdit } = useEditVideo();
   const { onOpen, getId, getVariant } = useDeleteProject();
-
-  const deleteImage = async (id: string) => {
+  const deleteVideo = async (id: string) => {
     onOpen();
     getId(id);
+    getVariant('video');
   };
   const handleEdit = ({
     id,
     name,
-    imgUrl,
+    videoUrl,
   }: {
     id: string;
     name: string;
-    imgUrl: string;
+    videoUrl: string;
   }) => {
-    getEditData({ id, name, imgUrl });
+    getEditData({ id, name, videoUrl });
     setEdit();
   };
   return (
     <Card className="!h-fit mb-4">
-      <CardContent className="flex justify-between flex-col sm:!flex-row space-y-2 items-center pt-4">
-        <div className="rounded-full relative w-20 h-20 overflow-hidden">
-          <Image
-            fill
-            priority
-            alt="image"
-            src={item?.imgUrl}
-            className=" object-cover"
-          />
+      <CardContent className="space-y-3   pt-4">
+        <div className="  overflow-hidden">
+          <video controls src={item?.videoUrl}></video>
         </div>
         <div>
-          <p className="uppercase text-bold">{item?.name}</p>
+          <span className="first-letter:!uppercase">Project name: </span>
+          <span className="uppercase text-bold">{item?.name}</span>
         </div>
       </CardContent>
       <CardFooter className="space-x-4">
@@ -63,7 +54,7 @@ const ProjectComponent = ({ item }: Props) => {
         <Button
           variant={'destructive'}
           className="w-full"
-          onClick={() => deleteImage(item?._id)}
+          onClick={() => deleteVideo(item?._id)}
         >
           Delete
         </Button>
@@ -72,4 +63,4 @@ const ProjectComponent = ({ item }: Props) => {
   );
 };
 
-export default ProjectComponent;
+export default VideoComponent;

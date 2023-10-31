@@ -16,9 +16,10 @@ import { Button } from './ui/button';
 import UploadComponent from './Upload';
 import { useToast } from './ui/use-toast';
 import { useRouter } from 'next/navigation';
-import { createProject } from '@/lib/actions/user';
+import { createProject, editProject } from '@/lib/actions/user';
 import { useEffect, useState } from 'react';
 import { useUser } from '@/hook/useUser';
+import { useProjectEdit } from '@/hook/useEditProject';
 
 const formSchema = z.object({
   name: z.string().min(2, {
@@ -33,6 +34,7 @@ type Props = {};
 
 const AddProject = (props: Props) => {
   const [isMounted, setIsMounted] = useState(false);
+  const { edit, editData, setEdit } = useProjectEdit();
   const { loggedIn } = useUser();
   const router = useRouter();
   const { toast } = useToast();
@@ -50,25 +52,36 @@ const AddProject = (props: Props) => {
   useEffect(() => {
     setIsMounted(true);
   }, []);
-
+  console.log(editData);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: '',
-      imageUrl: '',
+      name: editData.name || '',
+      imageUrl: editData.imgUrl || '',
     },
   });
+  useEffect(() => {
+    if (editData) {
+      form.setValue('name', editData.name);
+      form.setValue('imageUrl', editData.imgUrl);
+    }
+  }, [form, editData]);
 
   const isLoading = form.formState.isSubmitting;
   const onInvalid = (errors: any) => console.error(errors);
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
-      await createProject(values.name, values.imageUrl);
+      edit
+        ? await editProject(editData?.id as any, values.name, values.imageUrl)
+        : await createProject(values.name, values.imageUrl);
       toast({
         variant: 'success',
         title: 'Success',
-        description: 'You have added a new project',
+        description: edit
+          ? 'You have updated a project'
+          : 'You have added a new project',
       });
+      edit && setEdit();
       form.reset();
       router.refresh();
     } catch (error) {
@@ -128,7 +141,7 @@ const AddProject = (props: Props) => {
             className="w-full"
             type="submit"
           >
-            Submit
+            {edit ? 'Update' : ' Submit'}
           </Button>
         </form>
       </Form>

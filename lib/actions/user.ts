@@ -137,6 +137,40 @@ export async function createProject(name: string, imgUrl: string) {
     throw new Error('Failed to create project');
   }
 }
+export async function editProject(id: string, name: string, imgUrl: string) {
+  try {
+    connectToDB();
+
+    await Project.findByIdAndUpdate(
+      { _id: id },
+      {
+        name,
+        imgUrl,
+      }
+    );
+  } catch (error) {
+    console.log(error);
+
+    throw new Error('Failed to update project');
+  }
+}
+export async function editProjectV(id: string, name: string, videoUrl: string) {
+  try {
+    connectToDB();
+
+    await ProjectVideo.findByIdAndUpdate(
+      { _id: id },
+      {
+        name,
+        videoUrl,
+      }
+    );
+  } catch (error) {
+    console.log(error);
+
+    throw new Error('Failed to update project');
+  }
+}
 export async function deleteProject(id: string) {
   try {
     connectToDB();
@@ -178,6 +212,8 @@ export async function createProjectVideo(name: string, videoUrl: string) {
   }
 }
 export async function deleteProjectVideo(id: string) {
+  console.log(id);
+
   try {
     connectToDB();
 
@@ -254,7 +290,7 @@ export async function fetchVolunteers() {
       skill: item?.skill,
       country: item?.country,
       reason: item?.reason,
-      _id: item?._id,
+      _id: item?._id.toString(),
     }));
     return safeVolunteer;
   } catch (error) {
@@ -272,7 +308,7 @@ export async function fetchProject() {
       return {
         name: item?.name,
         imgUrl: item?.imgUrl,
-        _id: item?._id,
+        _id: item?._id.toString(),
       };
     });
     return safeProjects;
@@ -291,7 +327,7 @@ export async function fetchProjectVideos() {
       return {
         name: item?.name,
         videoUrl: item?.videoUrl,
-        _id: item?._id,
+        _id: item?._id.toString(),
       };
     });
     return safeProjects;
@@ -313,7 +349,7 @@ export async function fetchEvent() {
       venue: item?.venue,
       imgUrl: item?.imgUrl,
       date: item?.date?.toString(),
-      _id: item?._id,
+      _id: item?._id.toString(),
       description: item?.description,
     }));
     return safeEventModels;
