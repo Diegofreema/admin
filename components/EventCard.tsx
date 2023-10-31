@@ -10,22 +10,23 @@ import { useDeleteModal } from './modalControl';
 import { useUser } from '@/hook/useUser';
 import { Button } from './ui/button';
 import { useEdit } from '@/hook/useEdit';
-import { useEditEvent } from '@/hook/useEditEvent';
+import { Range, useEditEvent } from '@/hook/useEditEvent';
 import moment from 'moment-timezone';
 
 interface EventCardProps {
   name?: string;
-  date?: Date;
+  startDate?: string;
   venue?: string;
   imgUrl: string;
-
+  endDate?: string | null;
   id: string;
   heading?: string;
   description?: string;
   type: 'event' | 'slider';
 }
 const EventCard = ({
-  date,
+  startDate,
+  endDate,
   imgUrl,
   name,
   venue,
@@ -44,9 +45,11 @@ const EventCard = ({
   const router = useRouter();
   const pathname = usePathname();
   const { toast } = useToast();
-  const utcMoment = moment.utc(date);
+  const utcMoment = moment.utc(startDate);
+  const utcMoment2 = moment.utc(endDate);
   const isDate = utcMoment.tz('Africa/Lagos').format('DD/MM/YYYY');
-  const time = utcMoment.tz('Africa/Lagos').format('hh:mm A');
+  const isDate2 = utcMoment2.tz('Africa/Lagos').format('DD/MM/YYYY');
+
   useEffect(() => {
     if (!loggedIn) {
       router.push('/');
@@ -89,7 +92,8 @@ const EventCard = ({
     venue?: string;
     description?: string;
     imgUrl?: string;
-    date?: string;
+    date?: Range;
+
     id: string;
   }) => {
     getEditEventData({
@@ -97,14 +101,22 @@ const EventCard = ({
       venue: value.venue,
       description: value.description,
       imgUrl: value.imgUrl,
-      date: value.date as any,
+      //@ts-ignore
+      date: {
+        range1: {
+          startDate: new Date(startDate as any),
+          endDate: new Date(endDate as any),
+        },
+      },
+
       id,
     });
     setEditEvent();
   };
   const handleEditSlider = ({
     imgUrl,
-    date,
+    startDate,
+    endDate,
     name,
 
     venue,
@@ -113,7 +125,8 @@ const EventCard = ({
     id,
   }: {
     name?: string;
-    date?: any;
+    startDate?: any;
+    endDate?: any;
     venue?: string;
     imgUrl: string;
     time?: string;
@@ -122,13 +135,14 @@ const EventCard = ({
     description?: string;
   }) => {
     if (pathname === '/event') {
+      const range = { range1: { startDate, endDate } };
       handleEditEvent({
-        date,
         description,
         id,
         imgUrl,
         name,
         venue,
+        date: range,
       });
     } else if (pathname === '/slider') {
       {
@@ -137,8 +151,8 @@ const EventCard = ({
     }
   };
   return (
-    <Card className=" mb-4 w-full">
-      <CardContent className="space-y-2   pt-4">
+    <Card className=" mb-4 w-full space-x-4">
+      <CardContent className="space-y-4   pt-4">
         <div className="rounded-md relative w-[100%] h-[200px] overflow-hidden">
           <Image
             fill
@@ -152,9 +166,8 @@ const EventCard = ({
           {type === 'event' && (
             <>
               {' '}
-              <p>Date: {isDate}</p>
-              <p>Time: {time}</p>
-              <p></p>
+              <span>{isDate}</span>
+              {endDate && <span> - {isDate2}</span>}
             </>
           )}
           {type === 'slider' && (
@@ -165,21 +178,20 @@ const EventCard = ({
           )}
         </div>
       </CardContent>
-      <CardFooter className="flex justify-between flex-col sm:!flex-row space-y-4 sm:!space-y-0">
-        <div>
-          {type === 'event' && (
-            <>
-              <p className="uppercase    text-sm font-bold">Theme: {name}</p>
-              <p className="capitalize  text-sm font-semibold">
-                Venue: {venue}
-              </p>
-              <p>Description: {description}</p>
-            </>
-          )}
-        </div>
-        <div className="flex justify-between space-x-4 items-center">
+      <div className="px-4 ">
+        {type === 'event' && (
+          <>
+            <p className="uppercase    text-sm font-bold">Theme: {name}</p>
+            <p className="capitalize  text-sm font-semibold">Venue: {venue}</p>
+            <p>Description: {description}</p>
+          </>
+        )}
+      </div>
+      <CardFooter className="flex w-full mt-4 justify-between flex-col sm:!flex-row space-y-4 sm:!space-y-0">
+        <div className="flex w-full justify-between space-x-4 items-center">
           <Button
-            variant={'ghost'}
+            variant={'purple'}
+            className="w-full"
             // ts-ignore
             onClick={() =>
               handleEditSlider({
@@ -187,7 +199,8 @@ const EventCard = ({
                 description,
                 imgUrl,
                 id,
-                date,
+                startDate,
+                endDate,
                 name,
 
                 venue,
@@ -197,12 +210,13 @@ const EventCard = ({
             Edit
           </Button>
           {!loading ? (
-            <IconTrash
-              size={30}
-              color="red"
-              className="cursor-pointer"
+            <Button
+              className="w-full"
+              variant={'destructive'}
               onClick={() => handleDelete(id)}
-            />
+            >
+              Delete
+            </Button>
           ) : (
             <ColorRing
               visible={true}

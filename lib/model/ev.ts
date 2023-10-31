@@ -1,13 +1,14 @@
 import mongoose from 'mongoose';
 
-const EventSchema = new mongoose.Schema({
+const EvSchema = new mongoose.Schema({
   name: { type: String, required: true },
   imgUrl: { type: String, required: true },
   venue: { type: String, required: true },
-  date: { type: String, required: true },
+  startDate: { type: String, required: true },
   description: { type: String, required: true },
+  enDate: { type: String },
 });
 
-const Event = mongoose.models.Event || mongoose.model('Event', EventSchema);
+const ev = mongoose.models.ev || mongoose.model('ev', EvSchema);
 
-export default Event;
+export default ev;

@@ -15,7 +15,8 @@ export default async function Event() {
             key={i}
             venue={item?.venue}
             name={item?.name}
-            date={item?.date.toString()}
+            startDate={item?.startDate.toString()}
+            endDate={item?.endDate?.toString() || null}
             imgUrl={item?.imgUrl}
             id={item?._id.toString()}
             type="event"
@@ -29,7 +30,7 @@ export default async function Event() {
   return (
     <div className="py-[100px]  w-[90%] mx-auto">
       <DeleteModal />
-      <div className="grid grid-cols-1 sm:grid-cols-2 sm:gap-x-20 gap-y-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 sm:gap-x-20 gap-y-8">
         <div>
           <div className="space-y-16">
             <h2 className="text-center font-bold text-xl">Add An Event</h2>

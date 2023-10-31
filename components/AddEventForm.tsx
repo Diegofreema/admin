@@ -13,7 +13,7 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Textarea } from '@/components/ui/textarea';
-
+import { DateRangePicker } from 'react-date-range';
 import { Input } from '@/components/ui/input';
 import { Button } from './ui/button';
 import UploadComponent from './Upload';
@@ -55,7 +55,7 @@ const AddEvent = (props: Props) => {
       });
       return;
     }
-    if (values.date && values.date < new Date()) {
+    if (values.date && values.date.range1.startDate < new Date()) {
       toast({
         variant: 'destructive',
         title: 'Invalid Date',
@@ -63,23 +63,27 @@ const AddEvent = (props: Props) => {
       });
       return;
     }
+
+    console.log(values);
+
     setLoading(true);
+    console.log(values.date.range1);
 
     try {
       edit
         ? await editEvent(
+            values.date.range1 as any,
             editData.id,
             values.name,
             values.imgUrl,
             values.venue,
-            values.date,
             values.description
           )
         : await createEvent(
+            values.date.range1 as any,
             values.name,
             values.imgUrl,
             values.venue,
-            values.date,
             values.description
           );
       toast({
@@ -94,15 +98,15 @@ const AddEvent = (props: Props) => {
         venue: '',
         description: '',
         imgUrl: '',
-        date: new Date(),
+        date: { range1: { startDate: new Date(), endDate: new Date() } },
         id: '',
       });
       router.refresh();
-    } catch (error) {
+    } catch (error: any) {
       toast({
         variant: 'destructive',
         title: 'Error',
-        description: 'Something went wrong',
+        description: error.message,
       });
     } finally {
       setLoading(false);
@@ -133,11 +137,15 @@ const AddEvent = (props: Props) => {
           }
         />
 
-        <DateTimePicker
+        {/* <DateTimePicker
           className={'!border-transparent !pr-3 w-full  '}
           onChange={(date) => setValues({ ...values, date: date as any })}
           value={values.date as any}
           clearIcon={null}
+        /> */}
+        <DateRangePicker
+          ranges={[values.date.range1]}
+          onChange={(date) => setValues({ ...values, date: date as any })}
         />
 
         <UploadComponent

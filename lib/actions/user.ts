@@ -6,12 +6,13 @@ import Gallery from '../model/gallery';
 import Video from '../model/video';
 import Project from '../model/project';
 
-import { EventType } from '../types';
 import Volunteer from '../model/volunteer';
 import bcrypt from 'bcrypt';
 import Admin from '../model/admin';
 import ProjectVideo from '../model/projectVideos';
-import EventModel from '../model/eventModel';
+
+import myEvent from '../model/myEvents';
+import ev from '../model/ev';
 
 export async function createMember(name: string, job: string, imgUrl: string) {
   try {
@@ -75,22 +76,23 @@ export async function createImage(imgUrl: string) {
   }
 }
 export async function createEvent(
+  date: { startDate: string; endDate?: string },
   name?: string,
   imgUrl?: string,
   venue?: string,
-  date?: Date,
   description?: string
 ) {
-  console.log(description);
+  console.log(date);
 
   try {
     connectToDB();
 
-    await EventModel.create({
+    await ev.create({
       name,
       imgUrl,
       venue,
-      date,
+      startDate: date.startDate,
+      enDate: date.endDate,
       description,
     });
   } catch (error) {
@@ -99,22 +101,28 @@ export async function createEvent(
     throw new Error('Failed to Create Event');
   }
 }
+
+export interface TDate {
+  startDate: string;
+  endDate?: string;
+}
 export async function editEvent(
+  date: TDate,
   id: string,
   name?: string,
   imgUrl?: string,
   venue?: string,
-  date?: Date,
   description?: string
 ) {
   try {
     connectToDB();
-
-    await EventModel.findByIdAndUpdate(id, {
+    const { startDate, endDate } = date;
+    await ev.findByIdAndUpdate(id, {
       name,
       imgUrl,
       venue,
-      date,
+      startDate,
+      enDate: endDate,
       description,
     });
   } catch (error) {
@@ -342,17 +350,18 @@ export async function fetchEvent() {
   try {
     connectToDB();
 
-    const EventModels = await EventModel.find();
+    const EventModels = await ev.find();
 
-    const safeEventModels = EventModels?.map((item) => ({
+    const safeFoundationEvents = EventModels?.map((item) => ({
       name: item?.name,
       venue: item?.venue,
       imgUrl: item?.imgUrl,
-      date: item?.date?.toString(),
+      startDate: item?.startDate?.toString(),
+      endDate: item?.enDate?.toString(),
       _id: item?._id.toString(),
       description: item?.description,
     }));
-    return safeEventModels;
+    return safeFoundationEvents;
   } catch (error) {
     console.log(error);
 
@@ -363,7 +372,7 @@ export async function deleteEvent(id: string) {
   try {
     connectToDB();
 
-    await EventModel.findByIdAndDelete(id);
+    await ev.findByIdAndDelete(id);
   } catch (error) {
     console.log(error);
 

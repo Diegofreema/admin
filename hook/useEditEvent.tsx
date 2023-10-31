@@ -1,13 +1,16 @@
 import { deleteEvent, deleteMember } from '@/lib/actions/user';
 import { create } from 'zustand';
 
+export interface Range {
+  range1: { startDate: Date; endDate: Date };
+}
 interface ModalState {
   editData: {
     name?: string;
     venue?: string;
     description?: string;
     imgUrl?: string;
-    date?: Date;
+    date: Range;
     id: string;
   };
   edit: boolean;
@@ -18,7 +21,7 @@ interface ModalState {
     venue?: string;
     description?: string;
     imgUrl?: string;
-    date?: Date;
+    date: Range;
     id: string;
   }) => void;
 }
@@ -29,7 +32,7 @@ export const useEditEvent = create<ModalState>((set) => ({
     venue: '',
     description: '',
     imgUrl: '',
-    date: new Date(),
+    date: { range1: { startDate: new Date(), endDate: new Date() } },
     id: '',
   },
   edit: false,
@@ -39,7 +42,7 @@ export const useEditEvent = create<ModalState>((set) => ({
     venue?: string;
     description?: string;
     imgUrl?: string;
-    date?: Date;
+    date: Range;
     id: string;
   }) => set({ editData: value }),
 }));

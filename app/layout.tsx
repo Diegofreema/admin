@@ -8,7 +8,8 @@ import { SideBar } from '@/components/SideBar';
 import ToastContainer from '@/components/ToastContainer';
 import LoginModal from '@/components/LoginModal';
 import Provider from '@/components/Provider';
-
+import 'react-date-range/dist/styles.css'; // main style file
+import 'react-date-range/dist/theme/default.css';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
