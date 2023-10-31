@@ -95,7 +95,7 @@ const DeleteModal = () => {
     return null;
   }
   return (
-    <Dialog open={isOpen}>
+    <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent>
         <DialogHeader className="space-y-4">
           <DialogTitle className="text-center">
