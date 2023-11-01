@@ -134,6 +134,8 @@ const EventCard = ({
     heading?: string;
     description?: string;
   }) => {
+    console.log(id);
+
     if (pathname === '/event') {
       const range = { range1: { startDate, endDate } };
       handleEditEvent({

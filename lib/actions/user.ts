@@ -117,14 +117,18 @@ export async function editEvent(
   try {
     connectToDB();
     const { startDate, endDate } = date;
-    await ev.findByIdAndUpdate(id, {
-      name,
-      imgUrl,
-      venue,
-      startDate,
-      enDate: endDate,
-      description,
-    });
+
+    await ev.findByIdAndUpdate(
+      { _id: id },
+      {
+        name,
+        imgUrl,
+        venue,
+        startDate,
+        enDate: endDate,
+        description,
+      }
+    );
   } catch (error) {
     console.log(error);
 
