@@ -2,9 +2,10 @@
 import { connectToDB } from '../mongoose';
 import { Post as PostType } from '../types';
 import { NextResponse } from 'next/server';
-import BlogPost from '../model/post';
+
 import { postSchema, validateSchema } from '../validator';
-import BlogContent from '../model/post';
+
+import Article from '../model/post';
 
 export async function createPost(post: PostType) {
   const result = validateSchema(postSchema, post);
@@ -15,9 +16,9 @@ export async function createPost(post: PostType) {
   try {
     connectToDB();
 
-    const slugExists = await BlogPost.findOne({ slug });
+    const slugExists = await Article.findOne({ slug });
     if (slugExists) return { message: 'Slug already exists' };
-    const createdPost = await BlogContent.create({
+    const createdPost = await Article.create({
       title,
       content,
       author,
@@ -36,7 +37,7 @@ export async function fetchSinglePost(id: string) {
   try {
     connectToDB();
 
-    const slugExists = await BlogContent.findById(id);
+    const slugExists = await Article.findById(id);
     if (!slugExists) {
       return null;
     }
@@ -62,7 +63,7 @@ export async function fetchAllPosts() {
   try {
     connectToDB();
 
-    const posts = await BlogContent.find().sort({
+    const posts = await Article.find().sort({
       createdAt: 'desc',
     });
 
@@ -90,7 +91,7 @@ export async function deletePost(id: string) {
   try {
     connectToDB();
 
-    await BlogContent.findByIdAndDelete(id);
+    await Article.findByIdAndDelete(id);
 
     return {
       message: 'Post deleted successfully',
@@ -124,7 +125,7 @@ export async function editPost({
   try {
     connectToDB();
 
-    await BlogContent.findOneAndUpdate(
+    await Article.findOneAndUpdate(
       { _id: id },
       {
         thumbnail,

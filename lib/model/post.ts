@@ -11,7 +11,7 @@ interface PostInterface {
   thumbnail: string;
 }
 
-const BlogContentSchema = new mongoose.Schema<PostInterface>(
+const ArticleSchema = new mongoose.Schema<PostInterface>(
   {
     title: { type: String, required: true, trim: true },
     content: { type: String, required: true },
@@ -28,8 +28,7 @@ const BlogContentSchema = new mongoose.Schema<PostInterface>(
   }
 );
 
-const BlogContent =
-  mongoose.models.BlogContent ||
-  mongoose.model('BlogContent', BlogContentSchema);
+const Article =
+  mongoose.models.Article || mongoose.model('Article', ArticleSchema);
 
-export default BlogContent as Model<PostInterface>;
+export default Article as Model<PostInterface>;
