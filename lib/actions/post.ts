@@ -59,13 +59,18 @@ export async function fetchSinglePost(id: string) {
     throw new Error('Failed to Fetch Post');
   }
 }
-export async function fetchAllPosts() {
+export async function fetchAllPosts(pageNo?: number) {
+  const limit = 10;
+  const skip = pageNo || 0 * limit;
   try {
     connectToDB();
 
-    const posts = await Article.find().sort({
-      createdAt: 'desc',
-    });
+    const posts = await Article.find()
+      .sort({
+        createdAt: 'desc',
+      })
+      .skip(skip)
+      .limit(limit);
 
     const safePosts = posts?.map((item) => ({
       id: item?._id.toString(),
