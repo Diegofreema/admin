@@ -9,6 +9,7 @@ interface PostInterface {
   slug: string;
   createdAt: Date;
   thumbnail: string;
+  likes: ObjectId[];
 }
 
 const ArticleSchema = new mongoose.Schema<PostInterface>(
@@ -22,6 +23,7 @@ const ArticleSchema = new mongoose.Schema<PostInterface>(
     tags: { type: [String] },
     meta: { type: String, required: true },
     thumbnail: { type: String },
+    likes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
   },
   {
     timestamps: true,
