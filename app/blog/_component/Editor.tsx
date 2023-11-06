@@ -158,10 +158,8 @@ const Editor = ({ btnTitle = 'Submit', busy = false, initialValue }: Post) => {
         },
       }),
       Youtube.configure({
-        width: 840,
-        height: 472.5,
         HTMLAttributes: {
-          class: 'mx-auto rounded',
+          class: 'w-full aspect-video',
         },
       }),
       Link.configure({
