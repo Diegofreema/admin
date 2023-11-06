@@ -28,10 +28,10 @@ export default async function Event() {
       <h2 className="text-center font-bold text-xl">No Events Yet</h2>
     );
   return (
-    <div className="py-[100px]  w-[90%] mx-auto">
+    <div className="py-[100px] !overflow-scroll !h-screen  w-[90%] mx-auto">
       <DeleteModal />
       <div className="grid grid-cols-1 md:grid-cols-2 sm:gap-x-20 gap-y-8">
-        <div>
+        <div className="">
           <div className="space-y-16">
             <h2 className="text-center font-bold text-xl">Add An Event</h2>
             <AddEvent />

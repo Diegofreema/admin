@@ -41,7 +41,6 @@ const InfiniteScrollCom = (): JSX.Element => {
   if (isPending) {
     return <h1 className="text-2xl text-center  font-semibold">Loading...</h1>;
   }
-  console.log(posts);
 
   return (
     <div className="grid !grid-cols-1  md:!grid-cols-3 w-[80%] mx-auto gap-5">
@@ -59,7 +58,7 @@ const InfiniteScrollCom = (): JSX.Element => {
             />
           );
         })}
-      <div className="flex items-center justify-center space-x-4 mt-6">
+      <div className="flex items-center w-full justify-center space-x-4 mt-6">
         <Button
           className="border bg-black p-2 rounded-md inline-block  text-white"
           onClick={() => setPage((old) => Math.max(old - 1, 0))}

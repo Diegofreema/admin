@@ -86,10 +86,11 @@ const AddMemberForm = (props: Props) => {
     return null;
   }
   return (
-    <div className="container mx-auto">
-      <div className="container mx-auto">
+    <div className="">
+      <div className="">
         <form onSubmit={onSubmit} className="space-y-6">
           <Input
+            className="w-full"
             placeholder="Heading"
             value={values.heading}
             onChange={(e) => {
@@ -101,6 +102,7 @@ const AddMemberForm = (props: Props) => {
           />
 
           <Input
+            className="w-full"
             placeholder="Description"
             value={values.description}
             onChange={(e) => {

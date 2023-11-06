@@ -90,7 +90,7 @@ const PriorityForm = (props: Props) => {
     return null;
   }
   return (
-    <div className="container mx-auto">
+    <div className="">
       <form onSubmit={onSubmit} className="space-y-6">
         <Input
           placeholder="Heading"

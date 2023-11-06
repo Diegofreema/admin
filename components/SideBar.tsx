@@ -95,8 +95,8 @@ export function SideBar() {
 
   return (
     <nav className="!p-4 !z-40">
-      <ScrollArea>
-        <div className="flex items-center justify-center">
+      <ScrollArea className="h-[90%] sm:h-[100%] custom-scroll-bar">
+        <div className="flex items-center mb-4 justify-center">
           <Avatar>
             <AvatarImage src="/butterfly.jpeg" />
             <AvatarFallback>IMG</AvatarFallback>

@@ -42,6 +42,9 @@ const EventCard = ({
   const { getEditData, setEdit } = useEdit();
   const { getEditData: getEditEventData, setEdit: setEditEvent } =
     useEditEvent();
+  const trimText = (text: string, trimBy: number) => {
+    return text.length <= trimBy ? text : `${text.substring(0, trimBy)}...`;
+  };
   const router = useRouter();
   const pathname = usePathname();
   const { toast } = useToast();
@@ -175,7 +178,7 @@ const EventCard = ({
           {type === 'slider' && (
             <>
               <p>Heading: {heading}</p>
-              <p>Description: {description}</p>
+              <p>Description: {description?.slice(0, 100)}</p>
             </>
           )}
         </div>
@@ -185,7 +188,7 @@ const EventCard = ({
           <>
             <p className="uppercase    text-sm font-bold">Theme: {name}</p>
             <p className="capitalize  text-sm font-semibold">Venue: {venue}</p>
-            <p>Description: {description}</p>
+            <p>Description: {trimText(description as string, 100)}</p>
           </>
         )}
       </div>

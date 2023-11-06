@@ -61,21 +61,21 @@ const VolunteerComponent = ({
     <Card>
       <CardHeader>
         <CardTitle>
-          <h1 className="text-center font-bold text-xl">
+          <h1 className="text-center font-bold text-sm">
             {firstName} {lastName}
           </h1>
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        <p className="text-center font-bold text-xl">Email: {email}</p>
-        <p className="text-center font-bold text-xl">
+        <p className="text-center font-bold text-sm">Email: {email}</p>
+        <p className="text-center font-bold text-sm">
           Phone Number: {phoneNumber}
         </p>
-        <p className="text-center font-bold text-xl">Date of Birth: {dob}</p>
-        <p className="text-center font-bold text-xl">Address: {address}</p>
-        <p className="text-center font-bold text-xl">Skill: {skill}</p>
-        <p className="text-center font-bold text-xl">Country: {country}</p>
-        <p className="text-center font-bold text-xl">Reason: {reason}</p>
+        <p className="text-center font-bold text-sm">Date of Birth: {dob}</p>
+        <p className="text-center font-bold text-sm">Address: {address}</p>
+        <p className="text-center font-bold text-sm">Skill: {skill}</p>
+        <p className="text-center font-bold text-sm">Country: {country}</p>
+        <p className="text-center font-bold text-sm">Reason: {reason}</p>
       </CardContent>
       <CardFooter>
         <Button

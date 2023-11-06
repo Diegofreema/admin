@@ -33,14 +33,14 @@ const page = async (props: Props) => {
         );
       })
     ) : (
-      <h2 className="text-center w-full font-bold text-xl">
+      <h2 className="text-center w-full font-bold text-base">
         No Volunteers Yet
       </h2>
     );
   return (
     <div className="py-[100px]  w-[90%] mx-auto">
       <DeleteModal />
-      <h1 className="text-center font-bold text-xl">Volunteers</h1>
+      <h1 className="text-center font-bold text-xl underline">Volunteers</h1>
       <div
         className={cn(
           volunteer?.length <= 0

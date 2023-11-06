@@ -27,7 +27,7 @@ export default function RootLayout({
       <body className={inter.className}>
         <Provider>
           <LoginModal />
-          <div className="w-[50px] flex min-h-screen flex-col items-center pt-8 px-5 h-screen fixed inset-y-0 z-20 bg-purple-900">
+          <div className="w-[50px] flex min-h-screen flex-col items-center pt-8 px-5 h-screen fixed inset-y-0 pb-6 z-20 bg-purple-900">
             <SideBar />
           </div>
 

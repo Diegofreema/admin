@@ -6,7 +6,7 @@ type Props = {};
 
 const Obj = (props: Props) => {
   return (
-    <div className="py-[100px] min-h-screen space-y-8">
+    <div className="py-[100px] w-[90%] sm:w-[85%] mx-auto min-h-screen space-y-8">
       <ObjectiveComponents />
       <GoalComponents />
       <Priority />
