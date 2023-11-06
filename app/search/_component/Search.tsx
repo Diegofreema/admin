@@ -92,7 +92,7 @@ const Search = ({ allPosts, query }: Post): JSX.Element => {
             );
           })}
       </div>
-      <div className="flex h-screen items-center justify-center">
+      <div className="flex items-center justify-center">
         {Array.isArray(posts) && posts.length < 1 && (
           <p className="mt-[100px] text-center w-full">No Posts found</p>
         )}
