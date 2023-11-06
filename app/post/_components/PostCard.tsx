@@ -63,10 +63,13 @@ const PostCard: FC<Props> = ({
 
   if (!isMounted) return null;
   return (
-    <Card key={post.id} className="cursor-pointer shadow-black/50 shadow-md">
+    <Card
+      key={post.id}
+      className="cursor-pointer !max-h-[450px] rounded-sm shadow-black/50 shadow-md"
+    >
       <Link href={`/post/${post.id}`}>
         <CardHeader>
-          <div className="w-full h-[200px] flex items-center justify-center relative overflow-hidden">
+          <div className="w-full rounded-sm h-[200px] flex items-center justify-center relative overflow-hidden">
             {post?.thumbnail && (
               <Image
                 fill

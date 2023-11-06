@@ -152,3 +152,26 @@ export async function editPost({
     throw new Error('Failed to update Post');
   }
 }
+
+export const getSearchedPosts = async (title: string) => {
+  const query = title.trim();
+  try {
+    connectToDB();
+    const posts = await Article.find({
+      title: { $regex: query, $options: 'i' },
+    });
+    const safePosts = posts?.map((item) => ({
+      id: item?._id.toString(),
+      author: item?.author,
+      title: item?.title,
+      content: item?.content,
+      meta: item?.meta,
+      tags: item?.tags,
+      slug: item?.slug,
+      createdAt: item?.createdAt.toString(),
+      thumbnail: item?.thumbnail,
+    }));
+
+    return safePosts;
+  } catch (error) {}
+};
