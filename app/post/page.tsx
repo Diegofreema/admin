@@ -22,6 +22,7 @@ const Post = ({}: Props) => {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             className="w-[200px] outline-none focus:!outline-none focus:!ring-0"
+            placeholder="Search by title"
           />
         </form>
       </div>
