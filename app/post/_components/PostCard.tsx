@@ -34,6 +34,8 @@ const PostCard: FC<Props> = ({
   tags,
 }): JSX.Element | null => {
   const [isMounted, setIsMounted] = useState(false);
+  const queryClient = useQueryClient();
+
   useEffect(() => {
     setIsMounted(true);
     return () => setIsMounted(false);
@@ -57,6 +59,7 @@ const PostCard: FC<Props> = ({
         variant: 'success',
         description: 'Post deleted successfully',
       });
+      queryClient.invalidateQueries({ queryKey: ['posts'] });
       router.refresh();
     },
   });
