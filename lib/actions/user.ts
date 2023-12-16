@@ -13,6 +13,7 @@ import ProjectVideo from '../model/projectVideos';
 
 import myEvent from '../model/myEvents';
 import ev from '../model/ev';
+import { utApi } from '@/utils/uploadthing';
 
 export async function createMember(name: string, job: string, imgUrl: string) {
   try {
@@ -187,9 +188,10 @@ export async function deleteProject(id: string) {
   try {
     connectToDB();
 
-    await Project.findByIdAndDelete({
+    const project = await Project.findByIdAndDelete({
       _id: id,
     });
+    utApi.deleteFiles([project?.imgUrl]);
   } catch (error) {
     console.log(error);
 
@@ -200,9 +202,10 @@ export async function deleteProjectV(id: string) {
   try {
     connectToDB();
 
-    await ProjectVideo.findByIdAndDelete({
+    const project = await ProjectVideo.findByIdAndDelete({
       _id: id,
     });
+    utApi.deleteFiles([project?.videoUrl]);
   } catch (error) {
     console.log(error);
 
@@ -229,9 +232,10 @@ export async function deleteProjectVideo(id: string) {
   try {
     connectToDB();
 
-    await ProjectVideo.findByIdAndDelete({
+    const video = await ProjectVideo.findByIdAndDelete({
       _id: id,
     });
+    utApi.deleteFiles([video?.videoUrl]);
   } catch (error) {
     console.log(error);
 
@@ -242,9 +246,10 @@ export async function deleteProjectImg(id: string) {
   try {
     connectToDB();
 
-    await Project.findByIdAndDelete({
+    const project = await Project.findByIdAndDelete({
       _id: id,
     });
+    utApi.deleteFiles([project?.imgUrl]);
   } catch (error) {
     console.log(error);
 
@@ -376,7 +381,8 @@ export async function deleteEvent(id: string) {
   try {
     connectToDB();
 
-    await ev.findByIdAndDelete(id);
+    const event = await ev.findByIdAndDelete(id);
+    utApi.deleteFiles([event?.imgUrl]);
   } catch (error) {
     console.log(error);
 
@@ -387,7 +393,8 @@ export async function deleteMember(id: string) {
   try {
     connectToDB();
 
-    await Team.findByIdAndDelete(id);
+    const member = await Team.findByIdAndDelete(id);
+    utApi.deleteFiles([member?.imgUrl]);
   } catch (error) {
     console.log(error);
 
