@@ -267,7 +267,7 @@ export async function fetchGallery() {
   try {
     connectToDB();
 
-    const images = await Gallery.find();
+    const images = await Gallery.find().sort({ createdAt: 'asc' });
     return images;
   } catch (error) {
     console.log(error);
@@ -279,7 +279,7 @@ export async function fetchVideos() {
   try {
     connectToDB();
 
-    const videos = await Video.find();
+    const videos = await Video.find().sort({ createdAt: 'asc' });
     return videos;
   } catch (error) {
     console.log(error);
