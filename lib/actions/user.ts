@@ -13,7 +13,6 @@ import ProjectVideo from '../model/projectVideos';
 
 import myEvent from '../model/myEvents';
 import ev from '../model/ev';
-import { utApi } from '@/utils/uploadthing';
 
 export async function createMember(name: string, job: string, imgUrl: string) {
   try {
@@ -188,10 +187,9 @@ export async function deleteProject(id: string) {
   try {
     connectToDB();
 
-    const project = await Project.findByIdAndDelete({
+    await Project.findByIdAndDelete({
       _id: id,
     });
-    utApi.deleteFiles([project?.imgUrl]);
   } catch (error) {
     console.log(error);
 
@@ -202,10 +200,9 @@ export async function deleteProjectV(id: string) {
   try {
     connectToDB();
 
-    const project = await ProjectVideo.findByIdAndDelete({
+    await ProjectVideo.findByIdAndDelete({
       _id: id,
     });
-    utApi.deleteFiles([project?.videoUrl]);
   } catch (error) {
     console.log(error);
 
@@ -232,10 +229,9 @@ export async function deleteProjectVideo(id: string) {
   try {
     connectToDB();
 
-    const video = await ProjectVideo.findByIdAndDelete({
+    await ProjectVideo.findByIdAndDelete({
       _id: id,
     });
-    utApi.deleteFiles([video?.videoUrl]);
   } catch (error) {
     console.log(error);
 
@@ -246,10 +242,9 @@ export async function deleteProjectImg(id: string) {
   try {
     connectToDB();
 
-    const project = await Project.findByIdAndDelete({
+    await Project.findByIdAndDelete({
       _id: id,
     });
-    utApi.deleteFiles([project?.imgUrl]);
   } catch (error) {
     console.log(error);
 
@@ -381,8 +376,7 @@ export async function deleteEvent(id: string) {
   try {
     connectToDB();
 
-    const event = await ev.findByIdAndDelete(id);
-    utApi.deleteFiles([event?.imgUrl]);
+    await ev.findByIdAndDelete(id);
   } catch (error) {
     console.log(error);
 
@@ -393,8 +387,7 @@ export async function deleteMember(id: string) {
   try {
     connectToDB();
 
-    const member = await Team.findByIdAndDelete(id);
-    utApi.deleteFiles([member?.imgUrl]);
+    await Team.findByIdAndDelete(id);
   } catch (error) {
     console.log(error);
 

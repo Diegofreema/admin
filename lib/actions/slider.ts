@@ -1,6 +1,5 @@
 'use server';
 
-import { utApi } from '@/utils/uploadthing';
 import SliderImg from '../model/slider';
 import { connectToDB } from '../mongoose';
 
@@ -40,8 +39,7 @@ export async function deleteSlider(id: string) {
   try {
     connectToDB();
 
-    const slider = await SliderImg.findByIdAndDelete(id);
-    utApi.deleteFiles([slider?.imgUrl]);
+    await SliderImg.findByIdAndDelete(id);
   } catch (error) {
     console.log(error);
 
