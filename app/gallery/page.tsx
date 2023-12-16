@@ -10,15 +10,15 @@ export default async function Gallery() {
   const displayImages =
     gallery?.length > 0 ? (
       gallery?.map((item, i) => (
-        <Image
-          key={i}
-          width={200}
-          height={100}
-          priority
-          alt="image"
-          src={item?.imgUrl}
-          className=" object-cover rounded-md"
-        />
+        <div key={i} className="relative w-full h-[300px]">
+          <Image
+            fill
+            priority
+            alt="image"
+            src={item?.imgUrl}
+            className=" object-cover rounded-md"
+          />
+        </div>
       ))
     ) : (
       <h2 className="text-center font-bold text-xl">No images to display</h2>
@@ -26,7 +26,12 @@ export default async function Gallery() {
   const displayVideos =
     videos?.length > 0 ? (
       videos?.map((item, i) => (
-        <video controls key={i} src={item.videoUrl}></video>
+        <video
+          controls
+          key={i}
+          src={item.videoUrl}
+          className="object-cover w-full h-[300px]"
+        ></video>
       ))
     ) : (
       <h2 className="text-center font-bold text-xl">No Videos to display</h2>
@@ -47,10 +52,10 @@ export default async function Gallery() {
 
         <div className="space-y-16">
           <h2 className="text-center font-bold text-xl">Gallery</h2>
-          <div className="grid max-h-[500px]  place-items-center overflow-y-auto grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid max-h-[500px]  place-items-center overflow-y-auto grid-cols-1 gap-4">
             {displayImages}
           </div>
-          <div className="grid max-h-[500px] place-items-center overflow-y-auto grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid max-h-[500px] place-items-center overflow-y-auto grid-cols-1  gap-4">
             {displayVideos}
           </div>
         </div>
