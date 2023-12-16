@@ -38,7 +38,7 @@ export default async function Gallery() {
     );
   return (
     <div className="py-[100px] w-[90%] mx-auto">
-      <div className="grid grid-cols-1 sm:grid-cols-2 sm:gap-x-20 gap-y-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 lg:gap-x-20 gap-y-8">
         <div>
           <div className="space-y-16 mb-5">
             <h2 className="text-center font-bold text-xl">Add An Image</h2>

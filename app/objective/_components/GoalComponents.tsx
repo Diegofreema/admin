@@ -24,7 +24,7 @@ const GoalComponents = async (props: Props) => {
       <h2 className="text-center font-bold text-xl">No Goals Yet</h2>
     );
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
       <DeleteObjModal />
       <div>
         <h1 className="text-center font-semibold mb-5">Add A Goal</h1>

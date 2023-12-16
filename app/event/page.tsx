@@ -30,7 +30,7 @@ export default async function Event() {
   return (
     <div className="py-[100px] !overflow-scroll !h-screen  w-[90%] mx-auto">
       <DeleteModal />
-      <div className="grid grid-cols-1 md:grid-cols-2 sm:gap-x-20 gap-y-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 lg:gap-x-20 gap-y-8">
         <div className="">
           <div className="space-y-16">
             <h2 className="text-center font-bold text-xl">Add An Event</h2>

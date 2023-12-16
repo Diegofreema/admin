@@ -23,7 +23,7 @@ export default async function Team() {
   return (
     <div className="py-[100px]  w-[90%] mx-auto">
       <DeleteModal />
-      <div className="grid grid-cols-1 sm:grid-cols-2 sm:gap-x-20 gap-y-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 lg:gap-x-20 gap-y-8">
         <div className="space-y-16">
           <h2 className="text-center font-bold text-xl">Add A Member</h2>
           <AddMemberForm />
