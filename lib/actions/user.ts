@@ -52,7 +52,18 @@ export async function editMember(
 export async function createVideo(videoUrl: string) {
   try {
     connectToDB();
-
+    if (videoUrl.includes(',')) {
+      const urls = videoUrl.split(',');
+      for (let i = 0; i < urls.length; i++) {
+        await Video.create({
+          videoUrl: urls[i],
+        });
+      }
+    } else {
+      await Video.create({
+        videoUrl,
+      });
+    }
     await Video.create({
       videoUrl,
     });
@@ -63,12 +74,21 @@ export async function createVideo(videoUrl: string) {
   }
 }
 export async function createImage(imgUrl: string) {
+  console.log(imgUrl);
   try {
     connectToDB();
-
-    await Gallery.create({
-      imgUrl,
-    });
+    if (imgUrl.includes(',')) {
+      const urls = imgUrl.split(',');
+      for (let i = 0; i < urls.length; i++) {
+        await Gallery.create({
+          imgUrl: urls[i],
+        });
+      }
+    } else {
+      await Gallery.create({
+        imgUrl,
+      });
+    }
   } catch (error) {
     console.log(error);
 
