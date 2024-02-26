@@ -8,6 +8,7 @@ import { UploadDropzone } from '@/utils/uploadthing';
 import { IconCircleLetterX } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
 import { cn } from '@/lib/utils';
+import { UploadFileResponse } from 'uploadthing/client';
 interface Props {
   endpoint:
     | 'teamImage'
@@ -44,7 +45,7 @@ export default function UploadComponent({
   }, []);
   const [urls, setUrls] = useState<string[]>([]);
 
-  const getImageFormat = (res: TRes) => {
+  const getImageFormat = (res: UploadFileResponse<null>[]) => {
     if (res?.length > 1) {
       let arrayOfUrls: string[] = [];
       res.map((element) => {
