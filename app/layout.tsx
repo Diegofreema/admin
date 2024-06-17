@@ -24,14 +24,14 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={inter.className}>
+      <body className={`${inter.className}, bg-white`}>
         <Provider>
           <LoginModal />
           <div className="w-[50px] flex min-h-screen flex-col items-center pt-8 px-5 h-screen fixed inset-y-0 pb-6 z-20 bg-purple-900">
             <SideBar />
           </div>
 
-          <main className="ml-14">{children}</main>
+          <main className="ml-14 bg-white">{children}</main>
           <ToastContainer />
         </Provider>
       </body>

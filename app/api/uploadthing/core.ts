@@ -7,7 +7,7 @@ export const ourFileRouter = {
     image: { maxFileSize: '4MB', maxFileCount: 1 },
   }).onUploadComplete(() => {}),
   projectImage: f({
-    image: { maxFileSize: '4MB', maxFileCount: 500 },
+    image: { maxFileSize: '1024MB', maxFileCount: 500 },
   }).onUploadComplete(() => {}),
   projectVideo: f({
     video: { maxFileSize: '1024MB', maxFileCount: 1 },
@@ -17,7 +17,9 @@ export const ourFileRouter = {
   }).onUploadComplete(() => {}),
   galleryImg: f({
     image: { maxFileSize: '4MB', maxFileCount: 500 },
-  }).onUploadComplete(() => {}),
+  }).onUploadComplete(({ file, metadata }) => {
+    console.log({ file, metadata });
+  }),
   galleryVideo: f({
     video: { maxFileSize: '1024MB', maxFileCount: 30 },
   }).onUploadComplete(() => {}),
